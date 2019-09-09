@@ -25,14 +25,14 @@ function displayProducts() {
             console.log(` Name: ${item.product_name} | Price: ${item.price} | ID: ${item.item_id} | ${item.stock}\n`);
         }
 
-        checkout(products);
+        checkout();
 
     });
 }
 
 
 
-function checkout(products) {
+function checkout() {
 
 
     inquirer.prompt([
