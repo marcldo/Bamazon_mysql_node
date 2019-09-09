@@ -40,12 +40,14 @@ function checkout(products) {
             type: 'input',
             message: 'Enter the ID of the item you want to buy',
             name: 'itemToBuy'
+        },
+        {
+            type: 'input',
+            message: 'How many do you want to buy?',
+            name: 'quantity'
         }
     ])
         .then(answers => {
-            if (answers.itemToBuy <= 0) {
-
-            }
 
             connection.query(`SELECT * FROM products WHERE ?`,
                 [
@@ -58,8 +60,8 @@ function checkout(products) {
 
                     console.log(` ID: ${product[0].item_id} | Name: ${product[0].product_name} | Price: ${product[0].price}\n`);
 
-                    if (product[0].stock) {
-                        cashOut(product)
+                    if (product[0].stock >= answers.quantity) {
+                        cashOut(product, answers.quantity)
                     }
                     else {
                         console.log('Out of Stock');
@@ -74,7 +76,7 @@ function checkout(products) {
         });
 }
 
-function cashOut(product) {
+function cashOut(product, quantity) {
 
     inquirer.prompt([
         {
@@ -85,7 +87,7 @@ function cashOut(product) {
     ])
         .then(ans => {
             if (ans.confirm) {
-                connection.query(`UPDATE products SET stock = stock - 1 WHERE item_id = ${product[0].item_id}`);
+                connection.query(`UPDATE products SET stock = stock - ${quantity} WHERE item_id = ${product[0].item_id}`);
                 console.log(`Thanks for shopping enjoy, your new ${product[0].product_name}`);
                 connection.end();
             }
